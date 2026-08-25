@@ -3,41 +3,74 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Guia de Notebooks - Arquitetura</title>
+    <title>ArchBook Hub - Advanced</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { arch: { 50: '#f4f6f8', 100: '#e4e8ed', 900: '#1a1d24' } }
+                }
+            }
+        }
+    </script>
     <style>
-        body { font-family: 'Inter', -apple-system, sans-serif; background-color: #F9FAFB; }
-        .card-hover:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); transition: all 0.2s ease-in-out; }
+        body { background-color: #f8fafc; }
+        .glass { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.5); }
+        .smooth-shadow { box-shadow: 0 4px 20px rgba(0, 0, 0, 0.03); }
+        .hover-lift { transition: transform 0.2s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.2s; }
+        .hover-lift:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08); }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
     </style>
 </head>
-<body class="text-gray-800 h-screen flex overflow-hidden">
+<body class="text-slate-800 h-screen flex overflow-hidden selection:bg-blue-100 selection:text-blue-900">
 
-    <!-- Sidebar / Menu -->
-    <aside class="w-80 bg-white border-r border-gray-200 flex flex-col h-full z-10">
-        <div class="p-6 border-b border-gray-200">
-            <h1 class="text-2xl font-bold text-gray-900 tracking-tight">ArchBook Hub</h1>
-            <p class="text-sm text-gray-500 mt-1">Guia de escolha para Arquitetura</p>
+    <!-- Sidebar -->
+    <aside class="w-[340px] bg-white border-r border-slate-200 flex flex-col h-full z-20 shadow-sm shrink-0">
+        <div class="p-6 border-b border-slate-100 bg-slate-50/50">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-slate-900 text-white flex items-center justify-center shadow-lg">
+                    <i data-lucide="box" class="w-5 h-5"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold text-slate-900 tracking-tight">ArchBook Hub</h1>
+                    <p class="text-xs font-medium text-slate-500 uppercase tracking-wider mt-0.5">Especificações Técnicas</p>
+                </div>
+            </div>
         </div>
-        <div class="p-4 flex gap-2 border-b border-gray-200 bg-gray-50">
-            <button onclick="setMode('list')" id="btn-list" class="flex-1 py-2 text-sm font-semibold rounded-md bg-white border shadow-sm text-blue-600">Catálogo</button>
-            <button onclick="setMode('compare')" id="btn-compare" class="flex-1 py-2 text-sm font-semibold rounded-md hover:bg-gray-100 text-gray-600">Comparar (2)</button>
+        
+        <div class="p-4 grid grid-cols-2 gap-2 border-b border-slate-100 bg-white">
+            <button onclick="setMode('list')" id="btn-list" class="py-2.5 text-sm font-semibold rounded-lg bg-slate-900 text-white shadow-md transition-all">Catálogo</button>
+            <button onclick="setMode('compare')" id="btn-compare" class="py-2.5 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-100 transition-all">Comparar (2)</button>
         </div>
-        <div class="flex-1 overflow-y-auto p-4" id="laptop-list">
+        
+        <div class="flex-1 overflow-y-auto p-4 space-y-3" id="laptop-list">
             <!-- Injetado via JS -->
         </div>
     </aside>
 
     <!-- Main Content -->
-    <main class="flex-1 h-full overflow-y-auto bg-gray-50 relative" id="main-content">
+    <main class="flex-1 h-full overflow-y-auto bg-[#f4f6f8] relative w-full" id="main-content">
         <!-- Injetado via JS -->
     </main>
 
     <script src="dados.js"></script>
     <script>
-        let currentMode = 'list'; // 'list' or 'compare'
+        let currentMode = 'list';
         let selectedLaptopId = notebooks[0].id;
-        let compareIds = [notebooks[0].id, notebooks[1].id];
+        let compareIds = [notebooks[0].id, notebooks[1]?.id].filter(Boolean);
+
+        function formatCurrency(value) {
+            if (typeof value === 'number') {
+                return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            }
+            return value;
+        }
 
         function renderSidebar() {
             const container = document.getElementById('laptop-list');
@@ -45,22 +78,27 @@
             
             notebooks.forEach(nb => {
                 const isSelected = currentMode === 'list' ? nb.id === selectedLaptopId : compareIds.includes(nb.id);
-                const baseClasses = "mb-3 p-4 rounded-xl cursor-pointer border card-hover text-left w-full transition-colors";
-                const colorClasses = isSelected ? "bg-blue-50 border-blue-200 shadow-sm" : "bg-white border-gray-200 hover:border-blue-300";
+                const borderClass = isSelected ? "border-blue-500 ring-1 ring-blue-500 bg-blue-50/30" : "border-slate-200 bg-white hover:border-slate-300";
                 
-                const btn = document.createElement('button');
-                btn.className = `${baseClasses} ${colorClasses}`;
+                const btn = document.createElement('div');
+                btn.className = `p-4 rounded-xl cursor-pointer border hover-lift text-left transition-all relative ${borderClass}`;
                 btn.onclick = () => handleSelect(nb.id);
                 
                 btn.innerHTML = `
-                    <div class="flex justify-between items-start">
-                        <h3 class="font-bold text-gray-900 leading-tight">${nb.marca} ${nb.modelo}</h3>
-                        ${currentMode === 'compare' ? `<div class="h-4 w-4 rounded border flex items-center justify-center ${isSelected ? 'bg-blue-500 border-blue-500' : 'border-gray-300'}"><i data-lucide="check" class="text-white h-3 w-3 ${isSelected ? 'block' : 'hidden'}"></i></div>` : ''}
+                    ${isSelected && currentMode === 'compare' ? '<div class="absolute top-4 right-4 text-blue-600"><i data-lucide="check-circle-2" class="w-5 h-5 fill-blue-100"></i></div>' : ''}
+                    <div class="pr-6">
+                        <div class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-1">${nb.marca}</div>
+                        <h3 class="font-bold text-slate-900 leading-tight">${nb.modelo}</h3>
                     </div>
-                    <p class="text-xs text-gray-500 mt-1">${nb.processadorResumo} • RTX ${nb.gpuModel}</p>
-                    <div class="mt-3 flex items-center justify-between">
-                        <span class="text-sm font-semibold text-gray-900">${nb.precoMedio}</span>
-                        <span class="text-xs px-2 py-1 rounded-full bg-gray-100 text-gray-600">${nb.peso}</span>
+                    <div class="mt-3 flex flex-wrap gap-1">
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">${nb.specs.performance.cpu.split(' ')[0]} ${nb.specs.performance.cpu.split(' ')[1]}</span>
+                        <span class="inline-flex items-center px-2 py-0.5 rounded text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-100">${nb.specs.performance.gpu}</span>
+                    </div>
+                    <div class="mt-4 flex items-end justify-between">
+                        <div>
+                            <div class="text-[10px] text-slate-400 font-medium">A partir de</div>
+                            <div class="text-sm font-bold text-slate-900">${formatCurrency(nb.precoPromo)}</div>
+                        </div>
                     </div>
                 `;
                 container.appendChild(btn);
@@ -85,80 +123,116 @@
 
         function setMode(mode) {
             currentMode = mode;
-            document.getElementById('btn-list').className = `flex-1 py-2 text-sm font-semibold rounded-md ${mode === 'list' ? 'bg-white border shadow-sm text-blue-600' : 'hover:bg-gray-200 text-gray-600'}`;
-            document.getElementById('btn-compare').className = `flex-1 py-2 text-sm font-semibold rounded-md ${mode === 'compare' ? 'bg-white border shadow-sm text-blue-600' : 'hover:bg-gray-200 text-gray-600'}`;
+            const btnList = document.getElementById('btn-list');
+            const btnCompare = document.getElementById('btn-compare');
+            
+            if (mode === 'list') {
+                btnList.className = "py-2.5 text-sm font-semibold rounded-lg bg-slate-900 text-white shadow-md transition-all";
+                btnCompare.className = "py-2.5 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-200 transition-all";
+            } else {
+                btnCompare.className = "py-2.5 text-sm font-semibold rounded-lg bg-slate-900 text-white shadow-md transition-all";
+                btnList.className = "py-2.5 text-sm font-semibold rounded-lg text-slate-600 hover:bg-slate-200 transition-all";
+            }
             renderSidebar();
             renderMain();
         }
 
-        function getSpecsHtml(nb) {
-            return `
-                <div class="grid grid-cols-2 gap-4 mt-6">
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                        <div class="flex items-center gap-2 text-gray-500 mb-1"><i data-lucide="cpu" class="w-4 h-4"></i><span class="text-xs font-semibold uppercase tracking-wider">Processador</span></div>
-                        <p class="font-medium text-sm text-gray-900">${nb.specs.cpu}</p>
-                    </div>
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                        <div class="flex items-center gap-2 text-gray-500 mb-1"><i data-lucide="monitor-play" class="w-4 h-4"></i><span class="text-xs font-semibold uppercase tracking-wider">Placa de Vídeo (TGP)</span></div>
-                        <p class="font-medium text-sm text-gray-900">${nb.specs.gpu}</p>
-                        <p class="text-xs ${nb.specs.tgpBaixo ? 'text-red-500 font-medium mt-1' : 'text-green-600 mt-1'}">TGP: ${nb.specs.tgp}</p>
-                    </div>
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                        <div class="flex items-center gap-2 text-gray-500 mb-1"><i data-lucide="monitor" class="w-4 h-4"></i><span class="text-xs font-semibold uppercase tracking-wider">Tela</span></div>
-                        <p class="font-medium text-sm text-gray-900">${nb.specs.tela}</p>
-                        <p class="text-xs mt-1 ${nb.specs.telaRuim ? 'text-red-500 font-medium' : 'text-green-600'}">${nb.specs.telaCores} • ${nb.specs.brilho}</p>
-                    </div>
-                    <div class="bg-gray-50 p-4 rounded-lg border border-gray-100">
-                        <div class="flex items-center gap-2 text-gray-500 mb-1"><i data-lucide="memory-stick" class="w-4 h-4"></i><span class="text-xs font-semibold uppercase tracking-wider">Memória e Slot</span></div>
-                        <p class="font-medium text-sm text-gray-900">${nb.specs.ram}</p>
-                        <p class="text-xs text-gray-500 mt-1">Expansível: ${nb.specs.expansivel}</p>
-                    </div>
+        function buildSpecBlock(icon, title, specsObj) {
+            let html = `
+            <div class="bg-white p-5 rounded-2xl border border-slate-200 smooth-shadow">
+                <div class="flex items-center gap-2 mb-4 pb-3 border-b border-slate-100">
+                    <i data-lucide="${icon}" class="w-5 h-5 text-blue-600"></i>
+                    <h3 class="font-bold text-slate-800">${title}</h3>
                 </div>
-            `;
+                <div class="space-y-3">`;
+            
+            for (const [key, value] of Object.entries(specsObj)) {
+                if(key === 'portas' || Array.isArray(value)) continue; // handle arrays separately if needed
+                const formattedKey = key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1');
+                html += `
+                    <div class="flex justify-between items-start gap-4">
+                        <span class="text-xs font-medium text-slate-500 w-1/3 shrink-0">${formattedKey}</span>
+                        <span class="text-sm font-medium text-slate-900 text-right">${value}</span>
+                    </div>`;
+            }
+            html += `</div></div>`;
+            return html;
         }
 
         function renderDetailView(nb) {
+            const portsTags = nb.specs.portas.map(p => `<span class="inline-flex items-center px-2.5 py-1 rounded-md text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">${p}</span>`).join('');
+            
             return `
-                <div class="max-w-4xl mx-auto p-8 pt-12 pb-24">
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                        
-                        <!-- Header / Imagem -->
-                        <div class="bg-gray-100 w-full h-64 flex items-center justify-center relative border-b border-gray-200">
+                <div class="max-w-6xl mx-auto p-6 md:p-10 pb-24">
+                    <!-- Header -->
+                    <div class="bg-white rounded-3xl p-8 border border-slate-200 smooth-shadow flex flex-col md:flex-row gap-10 items-center mb-8">
+                        <div class="w-full md:w-1/3 flex justify-center">
                             ${nb.imagemUrl 
-                                ? `<img src="${nb.imagemUrl}" alt="${nb.modelo}" class="object-contain h-56 mix-blend-multiply">` 
-                                : `<div class="text-gray-400 flex flex-col items-center"><i data-lucide="laptop" class="w-16 h-16 mb-2"></i><span>Sem Imagem</span></div>`
+                                ? `<img src="${nb.imagemUrl}" alt="${nb.modelo}" class="w-full max-w-[300px] object-contain drop-shadow-xl hover:scale-105 transition-transform duration-500">` 
+                                : `<div class="w-48 h-48 bg-slate-100 rounded-2xl flex items-center justify-center text-slate-400"><i data-lucide="laptop" class="w-12 h-12"></i></div>`
                             }
-                            <div class="absolute top-4 right-4 bg-white px-3 py-1 rounded-full shadow-sm text-sm font-bold text-gray-800">
-                                ${nb.precoMedio}
+                        </div>
+                        <div class="w-full md:w-2/3">
+                            <div class="flex items-center gap-3 mb-2">
+                                <span class="px-3 py-1 rounded-full text-xs font-bold tracking-wider bg-slate-900 text-white uppercase">${nb.marca}</span>
+                            </div>
+                            <h2 class="text-4xl font-extrabold text-slate-900 mb-4 tracking-tight">${nb.modelo}</h2>
+                            <p class="text-slate-500 text-lg leading-relaxed mb-6">${nb.descricao}</p>
+                            
+                            <div class="flex flex-wrap items-center gap-6 bg-slate-50 p-4 rounded-2xl border border-slate-100">
+                                <div>
+                                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Preço Promo</p>
+                                    <p class="text-2xl font-bold text-emerald-600">${formatCurrency(nb.precoPromo)}</p>
+                                </div>
+                                <div class="w-px h-10 bg-slate-200"></div>
+                                <div>
+                                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-1">Preço Médio</p>
+                                    <p class="text-xl font-bold text-slate-600 line-through decoration-slate-300">${formatCurrency(nb.precoMedio)}</p>
+                                </div>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Info -->
-                        <div class="p-8">
-                            <h2 class="text-3xl font-extrabold text-gray-900">${nb.marca} ${nb.modelo}</h2>
-                            <p class="text-gray-500 text-lg mt-2">${nb.descricao}</p>
-                            
-                            ${getSpecsHtml(nb)}
-
-                            <div class="grid grid-cols-2 gap-8 mt-10">
-                                <div>
-                                    <h4 class="flex items-center gap-2 font-bold text-green-700 mb-4"><i data-lucide="check-circle-2"></i> Por que comprar? (Prós)</h4>
-                                    <ul class="space-y-2">
-                                        ${nb.pros.map(pro => `<li class="flex items-start gap-2 text-sm text-gray-700"><div class="mt-1 w-1.5 h-1.5 rounded-full bg-green-500 shrink-0"></div>${pro}</li>`).join('')}
-                                    </ul>
-                                </div>
-                                <div>
-                                    <h4 class="flex items-center gap-2 font-bold text-orange-600 mb-4"><i data-lucide="alert-triangle"></i> Atenção (Contras)</h4>
-                                    <ul class="space-y-2">
-                                        ${nb.contras.map(con => `<li class="flex items-start gap-2 text-sm text-gray-700"><div class="mt-1 w-1.5 h-1.5 rounded-full bg-orange-400 shrink-0"></div>${con}</li>`).join('')}
-                                    </ul>
-                                </div>
+                    <!-- Ficha Técnica Grid -->
+                    <h2 class="text-2xl font-extrabold text-slate-900 mb-6 flex items-center gap-2"><i data-lucide="server-cog" class="w-6 h-6 text-blue-600"></i> Ficha Técnica Detalhada</h2>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+                        ${buildSpecBlock('monitor', 'Tela & Display', nb.specs.tela)}
+                        ${buildSpecBlock('cpu', 'Performance', nb.specs.performance)}
+                        ${buildSpecBlock('hammer', 'Construção & Design', nb.specs.construcao)}
+                        ${buildSpecBlock('battery-charging', 'Energia & Conexão', nb.specs.energiaConectividade)}
+                        
+                        <div class="bg-white p-5 rounded-2xl border border-slate-200 smooth-shadow lg:col-span-2">
+                            <div class="flex items-center gap-2 mb-4 pb-3 border-b border-slate-100">
+                                <i data-lucide="usb" class="w-5 h-5 text-blue-600"></i>
+                                <h3 class="font-bold text-slate-800">Portas & Entradas</h3>
                             </div>
-
-                            <div class="mt-10 bg-red-50 border-l-4 border-red-500 p-5 rounded-r-lg">
-                                <h4 class="font-bold text-red-800 flex items-center gap-2"><i data-lucide="flame" class="w-5 h-5"></i> Red Flags / Alertas</h4>
-                                <p class="text-sm text-red-700 mt-2">${nb.redFlags}</p>
+                            <div class="flex flex-wrap gap-2 mt-4">
+                                ${portsTags}
                             </div>
+                        </div>
+                    </div>
+
+                    <!-- Avaliação / Red Flags -->
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bg-emerald-50 rounded-2xl p-6 border border-emerald-100">
+                            <h4 class="font-bold text-emerald-800 mb-4 flex items-center gap-2"><i data-lucide="check-circle" class="w-5 h-5"></i> Pontos Fortes</h4>
+                            <ul class="space-y-3">
+                                ${nb.pros.map(pro => `<li class="flex items-start gap-2.5 text-sm text-emerald-900"><div class="mt-1.5 w-1.5 h-1.5 rounded-full bg-emerald-500 shrink-0"></div><span class="leading-relaxed">${pro}</span></li>`).join('')}
+                            </ul>
+                        </div>
+                        
+                        <div class="bg-rose-50 rounded-2xl p-6 border border-rose-100">
+                            <h4 class="font-bold text-rose-800 mb-4 flex items-center gap-2"><i data-lucide="x-octagon" class="w-5 h-5"></i> Pontos Fracos</h4>
+                            <ul class="space-y-3">
+                                ${nb.contras.map(con => `<li class="flex items-start gap-2.5 text-sm text-rose-900"><div class="mt-1.5 w-1.5 h-1.5 rounded-full bg-rose-400 shrink-0"></div><span class="leading-relaxed">${con}</span></li>`).join('')}
+                            </ul>
+                        </div>
+
+                        <div class="bg-amber-50 rounded-2xl p-6 border border-amber-200 shadow-[inset_0_0_20px_rgba(251,191,36,0.15)] relative overflow-hidden">
+                            <div class="absolute top-0 right-0 p-4 opacity-10"><i data-lucide="alert-triangle" class="w-24 h-24"></i></div>
+                            <h4 class="font-bold text-amber-900 mb-3 flex items-center gap-2 relative z-10"><i data-lucide="flame" class="w-5 h-5 text-amber-600"></i> Alerta P/ Arquitetos</h4>
+                            <p class="text-sm text-amber-900 leading-relaxed relative z-10 font-medium">${nb.redFlags}</p>
                         </div>
                     </div>
                 </div>
@@ -166,42 +240,78 @@
         }
 
         function renderCompareView() {
-            if (compareIds.length === 0) return `<div class="flex h-full items-center justify-center text-gray-400">Selecione notebooks para comparar.</div>`;
+            if (compareIds.length === 0) return `<div class="flex h-full items-center justify-center text-slate-400 font-medium">Selecione notebooks para comparar na barra lateral.</div>`;
             
             const nbs = compareIds.map(id => notebooks.find(n => n.id === id));
             
-            let cols = nbs.map(nb => `
-                <div class="flex-1 bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div class="p-6 border-b border-gray-100 bg-gray-50">
-                        <h3 class="text-xl font-bold text-gray-900">${nb.marca} ${nb.modelo}</h3>
-                        <p class="text-lg font-semibold text-blue-600 mt-1">${nb.precoMedio}</p>
-                    </div>
-                    <div class="p-6">
-                        ${getSpecsHtml(nb)}
-                        
-                        <div class="mt-8 space-y-4">
-                            <div>
-                                <h5 class="text-xs font-bold uppercase text-green-600 mb-2">Vantagens</h5>
-                                <ul class="text-sm text-gray-700 space-y-1">
-                                    ${nb.pros.map(p => `<li>• ${p}</li>`).join('')}
-                                </ul>
-                            </div>
-                            <div>
-                                <h5 class="text-xs font-bold uppercase text-red-500 mb-2">Problemas</h5>
-                                <ul class="text-sm text-gray-700 space-y-1">
-                                    ${nb.redFlags}
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+            // Function to generate comparison rows
+            const getRow = (label, val1, val2, isHighlight = false) => `
+                <div class="flex border-b border-slate-100 hover:bg-slate-50 transition-colors">
+                    <div class="w-1/4 py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center bg-slate-50/50">${label}</div>
+                    <div class="w-3/8 py-3 px-4 text-sm font-medium ${isHighlight ? 'text-blue-700 font-bold' : 'text-slate-800'} border-l border-slate-100">${val1}</div>
+                    ${val2 ? `<div class="w-3/8 py-3 px-4 text-sm font-medium ${isHighlight ? 'text-blue-700 font-bold' : 'text-slate-800'} border-l border-slate-100">${val2}</div>` : ''}
                 </div>
-            `).join('');
+            `;
+
+            const nb1 = nbs[0];
+            const nb2 = nbs[1] || null;
 
             return `
-                <div class="p-8 pt-12 h-full">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-8">Comparativo Lado a Lado</h2>
-                    <div class="flex gap-6">
-                        ${cols}
+                <div class="p-6 md:p-10 pb-24 max-w-7xl mx-auto">
+                    <h2 class="text-3xl font-extrabold text-slate-900 mb-8 flex items-center gap-3"><i data-lucide="scale" class="w-8 h-8 text-blue-600"></i> Comparativo Técnico</h2>
+                    
+                    <div class="bg-white rounded-2xl border border-slate-200 smooth-shadow overflow-hidden">
+                        <!-- Headers -->
+                        <div class="flex border-b-2 border-slate-200 bg-white sticky top-0 z-10">
+                            <div class="w-1/4 p-6"></div>
+                            <div class="w-3/8 p-6 border-l border-slate-100">
+                                <div class="text-xs font-bold text-blue-600 mb-1 uppercase tracking-wider">${nb1.marca}</div>
+                                <h3 class="text-xl font-bold text-slate-900 leading-tight">${nb1.modelo}</h3>
+                                <div class="mt-4 text-xl font-extrabold text-emerald-600">${formatCurrency(nb1.precoPromo)}</div>
+                            </div>
+                            ${nb2 ? `
+                            <div class="w-3/8 p-6 border-l border-slate-100">
+                                <div class="text-xs font-bold text-blue-600 mb-1 uppercase tracking-wider">${nb2.marca}</div>
+                                <h3 class="text-xl font-bold text-slate-900 leading-tight">${nb2.modelo}</h3>
+                                <div class="mt-4 text-xl font-extrabold text-emerald-600">${formatCurrency(nb2.precoPromo)}</div>
+                            </div>
+                            ` : ''}
+                        </div>
+
+                        <!-- Section: Tela -->
+                        <div class="bg-slate-100/50 py-2 px-4 text-xs font-bold text-slate-600 uppercase tracking-widest flex items-center gap-2"><i data-lucide="monitor" class="w-4 h-4"></i> Tela</div>
+                        ${getRow('Painel', nb1.specs.tela.painel, nb2?.specs.tela.painel)}
+                        ${getRow('Resolução', nb1.specs.tela.resolucao, nb2?.specs.tela.resolucao)}
+                        ${getRow('Brilho Máx', nb1.specs.tela.brilho, nb2?.specs.tela.brilho, true)}
+                        ${getRow('Tamanho', nb1.specs.tela.tamanho, nb2?.specs.tela.tamanho)}
+
+                        <!-- Section: Performance -->
+                        <div class="bg-slate-100/50 py-2 px-4 text-xs font-bold text-slate-600 uppercase tracking-widest flex items-center gap-2 border-t border-slate-200"><i data-lucide="cpu" class="w-4 h-4"></i> Performance</div>
+                        ${getRow('Processador (CPU)', nb1.specs.performance.cpu, nb2?.specs.performance.cpu, true)}
+                        ${getRow('Placa de Vídeo (GPU)', nb1.specs.performance.gpu, nb2?.specs.performance.gpu, true)}
+                        ${getRow('Memória RAM', nb1.specs.performance.ram, nb2?.specs.performance.ram)}
+                        ${getRow('Armazenamento', nb1.specs.performance.armazenamento, nb2?.specs.performance.armazenamento)}
+
+                        <!-- Section: Construcao -->
+                        <div class="bg-slate-100/50 py-2 px-4 text-xs font-bold text-slate-600 uppercase tracking-widest flex items-center gap-2 border-t border-slate-200"><i data-lucide="hammer" class="w-4 h-4"></i> Físico & Bateria</div>
+                        ${getRow('Material', nb1.specs.construcao.material, nb2?.specs.construcao.material)}
+                        ${getRow('Peso', nb1.specs.construcao.peso, nb2?.specs.construcao.peso, true)}
+                        ${getRow('Bateria', nb1.specs.energiaConectividade.bateria, nb2?.specs.energiaConectividade.bateria)}
+                        ${getRow('Carregador', nb1.specs.energiaConectividade.carregador, nb2?.specs.energiaConectividade.carregador)}
+                        
+                        <!-- Section: Portas -->
+                        <div class="bg-slate-100/50 py-2 px-4 text-xs font-bold text-slate-600 uppercase tracking-widest flex items-center gap-2 border-t border-slate-200"><i data-lucide="usb" class="w-4 h-4"></i> Conexões</div>
+                        <div class="flex border-b border-slate-100">
+                            <div class="w-1/4 py-3 px-4 text-xs font-semibold text-slate-500 uppercase tracking-wider flex items-center bg-slate-50/50">Portas</div>
+                            <div class="w-3/8 py-3 px-4 text-xs text-slate-700 border-l border-slate-100 space-y-1">
+                                ${nb1.specs.portas.map(p => `<div>• ${p}</div>`).join('')}
+                            </div>
+                            ${nb2 ? `
+                            <div class="w-3/8 py-3 px-4 text-xs text-slate-700 border-l border-slate-100 space-y-1">
+                                ${nb2.specs.portas.map(p => `<div>• ${p}</div>`).join('')}
+                            </div>
+                            ` : ''}
+                        </div>
                     </div>
                 </div>
             `;
