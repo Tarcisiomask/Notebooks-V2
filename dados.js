@@ -1,108 +1,113 @@
-// Banco de Dados dos Notebooks
-// Você pode editar este arquivo facilmente para adicionar ou remover modelos.
+// Banco de Dados Estruturado - ArchBook Hub
+// Estrutura de dados escalável e tipada.
 
 const notebooks = [
     {
-        id: "lenovo-loq-15irh8",
+        id: "lenovo-loq-15irx9",
         marca: "Lenovo",
-        modelo: "LOQ (Core i5 12a Gen)",
-        precoMedio: "R$ 4.700 - R$ 5.300",
-        gpuModel: "3050 6GB",
-        processadorResumo: "i5-12450H",
-        peso: "2.4 kg",
+        modelo: "LOQ 15IRX9",
+        precoPromo: 4874.00,
+        precoMedio: 5600.00,
         imagemUrl: "https://p2-ofp.static.pub/fes/cms/2023/04/07/y52mrtnnyx3x4t9lmt0k648lchw0r4309325.png",
-        descricao: "O sucessor do Ideapad Gaming 3i. É um notebook honesto e com excelente sistema de refrigeração, compartilhando o chassi da linha Legion.",
+        descricao: "A nova geração focada em alta eficiência térmica. Um equipamento extremamente sólido para quem precisa de performance sem atingir o estrangulamento térmico (thermal throttling) em renders longos.",
         specs: {
-            cpu: "Intel Core i5-12450H (8 Núcleos, 12 Threads)",
-            gpu: "NVIDIA GeForce RTX 3050 (6GB GDDR6)",
-            tgp: "95W (Excelente para a 3050)",
-            tgpBaixo: false,
-            tela: "15.6 polegadas FHD (1920x1080) WVA",
-            telaCores: "Aprox. 60% sRGB",
-            brilho: "250 nits (Baixo)",
-            telaRuim: true,
-            ram: "16GB DDR5 4800MHz",
-            expansivel: "Sim, 2 slots SODIMM (Até 32GB)",
+            tela: {
+                painel: "IPS",
+                resolucao: "Full HD (1920x1080)",
+                atualizacao: "144Hz",
+                brilho: "300 nits",
+                tamanho: "15,6''"
+            },
+            performance: {
+                cpu: "Core i5 12450HX",
+                gpu: "RTX 3050 (TGP Alto)",
+                ram: "16GB (Máx de 32GB)",
+                armazenamento: "SSD NVMe (512GB)"
+            },
+            construcao: {
+                material: "Principalmente em plástico",
+                peso: "1,77 kg",
+                teclado: "Retroiluminado (Sim)",
+                webcam: "720p"
+            },
+            energiaConectividade: {
+                bateria: "57Wh",
+                carregador: "135W",
+                wifi: "Wi-Fi 6.0",
+                bluetooth: "5.2"
+            },
+            portas: [
+                "1x USB-C Thunderbolt",
+                "2x USB-A 3.2",
+                "1x HDMI",
+                "1x RJ-45",
+                "1x Leitor de cartão SD"
+            ]
         },
         pros: [
-            "Sistema de refrigeração excelente, muito difícil dar thermal throttling.",
-            "Placa de vídeo bem alimentada (TGP de 95W).",
-            "Usa memória DDR5, que é mais rápida para o Revit e AutoCAD.",
-            "Construção robusta e design sóbrio (não parece uma nave espacial)."
+            "O processador HX garante muita potência para cálculos e AutoCAD.",
+            "Possui porta Thunderbolt (excelente para múltiplos monitores no escritório).",
+            "Peso excelente para a categoria (1,77 kg facilita muito a mobilidade).",
+            "Brilho de 300 nits permite usar confortavelmente em salas de aula bem iluminadas."
         ],
         contras: [
-            "A tela de 250 nits e baixo sRGB vai deixar as cores lavadas. Péssimo para render final e design de interiores.",
-            "Bateria drena muito rápido (arquitetura do processador consome muito).",
-            "Um pouco pesado para levar todo dia na mochila."
+            "A RTX 3050 já está ficando datada para quem pretende focar massivamente em Unreal Engine 5 ou Lumion 2024.",
+            "Webcam 720p é básica para reuniões de apresentação de projeto.",
+            "A bateria de 57Wh vai acabar rápido renderizando fora da tomada."
         ],
-        redFlags: "Fique de olho na tela. Se ela for trabalhar com edição de imagem final no Photoshop após o render, vai precisar de um monitor externo urgente porque as cores no LOQ estarão imprecisas."
-    },
-    {
-        id: "dell-g15-5530",
-        marca: "Dell",
-        modelo: "G15 5530",
-        precoMedio: "R$ 5.200 - R$ 5.800",
-        gpuModel: "3050 6GB",
-        processadorResumo: "i5-13450HX",
-        peso: "2.81 kg",
-        imagemUrl: "https://i.dell.com/is/image/DellContent/content/dam/ss2/product-images/dell-client-products/notebooks/g-series/g15-5530/media-gallery/dark-shadow-gray/notebook-g15-5530-nt-dark-shadow-gray-gallery-1.png",
-        descricao: "Um tanque de guerra. O processador da linha HX é nível desktop, entregando uma performance bruta insana para programas que dependem de CPU (como processos do AutoCAD).",
-        specs: {
-            cpu: "Intel Core i5-13450HX (10 Núcleos, 16 Threads) - Muito Forte",
-            gpu: "NVIDIA GeForce RTX 3050 (6GB GDDR6)",
-            tgp: "95W",
-            tgpBaixo: false,
-            tela: "15.6 polegadas FHD 120Hz WVA",
-            telaCores: "Aprox. 60% sRGB",
-            brilho: "250 nits",
-            telaRuim: true,
-            ram: "16GB DDR5 4800MHz",
-            expansivel: "Sim, até 32GB",
-        },
-        pros: [
-            "Processador poderosíssimo (HX). Para cálculos estruturais ou modelagem complexa, ele voa.",
-            "Garantia Dell costuma ser uma das melhores (atendimento em domicílio).",
-            "TGP da placa de vídeo alto."
-        ],
-        contras: [
-            "MUITO pesado. Quase 3kg o notebook + a fonte gigante de 330W. Carregar isso no campus de arquitetura vai quebrar as costas dela.",
-            "A tela tem a mesma deficiência de cores (baixo sRGB).",
-            "Ele esquenta bastante devido ao processador de altíssima performance, as ventoinhas fazem barulho alto sob estresse."
-        ],
-        redFlags: "A fonte de energia é um tijolo enorme e o peso total passa fácil dos 3.5kg. Se mobilidade for essencial, pule fora do G15."
+        redFlags: "Atenção ao carregador de 135W. Em estresse máximo, a bateria pode descarregar levemente mesmo na tomada dependendo da configuração de energia usada, pois o processador HX consome bastante."
     },
     {
         id: "acer-nitro-5-rtx4050",
         marca: "Acer",
         modelo: "Nitro 5 (AN515-58)",
-        precoMedio: "R$ 5.500 - R$ 6.200",
-        gpuModel: "4050 6GB",
-        processadorResumo: "i5-12450H ou i7",
-        peso: "2.6 kg",
+        precoPromo: 5500.00,
+        precoMedio: 6200.00,
         imagemUrl: "https://images.acer.com/is/image/acer/Nitro-5-AN515-58-Backliton-RGB-Black-01a-1?$Product-Cards-XL$",
-        descricao: "A nova geração do campeão de vendas. Traz a nova RTX 4050 que tem suporte ao Frame Generation, o que ajuda muito em navegação de maquete em tempo real.",
+        descricao: "Uma das máquinas mais procuradas pela presença da RTX 4050, que traz o Frame Generation, essencial para navegação suave em maquetes eletrônicas pesadas em tempo real.",
         specs: {
-            cpu: "Intel Core i5-12450H",
-            gpu: "NVIDIA GeForce RTX 4050 (6GB GDDR6)",
-            tgp: "140W (Performance Máxima)",
-            tgpBaixo: false,
-            tela: "15.6 polegadas FHD 144Hz IPS",
-            telaCores: "Aprox. 65% sRGB",
-            brilho: "250 nits",
-            telaRuim: true,
-            ram: "16GB DDR4 3200MHz",
-            expansivel: "Sim",
+            tela: {
+                painel: "IPS",
+                resolucao: "Full HD (1920x1080)",
+                atualizacao: "144Hz",
+                brilho: "250 nits",
+                tamanho: "15,6''"
+            },
+            performance: {
+                cpu: "Core i5 12450H",
+                gpu: "RTX 4050 (140W)",
+                ram: "16GB DDR4 (Máx de 32GB)",
+                armazenamento: "SSD NVMe (512GB)"
+            },
+            construcao: {
+                material: "Plástico com tampa reforçada",
+                peso: "2,6 kg",
+                teclado: "Retroiluminado RGB (Sim)",
+                webcam: "720p"
+            },
+            energiaConectividade: {
+                bateria: "57.5Wh",
+                carregador: "230W",
+                wifi: "Wi-Fi 6.0",
+                bluetooth: "5.1"
+            },
+            portas: [
+                "1x USB-C Thunderbolt 4",
+                "3x USB-A 3.2",
+                "1x HDMI 2.1",
+                "1x RJ-45 Gigabit"
+            ]
         },
         pros: [
-            "A RTX 4050 com 140W de TGP vai triturar renders no Lumion ou D5 Render.",
-            "Fácil acesso para upgrade (adicionar SSD ou RAM é simples).",
-            "Excelente custo-benefício para levar uma RTX série 4000."
+            "A RTX 4050 com 140W é absurdamente superior à RTX 3050 em renderização por hardware (Ray Tracing).",
+            "Fonte de 230W garante energia de sobra, o notebook não capenga sob estresse.",
+            "Muitas portas USB tipo A, ideal para ligar mouse, teclado e mesa digitalizadora."
         ],
         contras: [
-            "Memória ainda é DDR4 (um pouco mais lenta que os concorrentes novos).",
-            "Design muito 'Gamer' (cheio de detalhes vermelhos, teclado RGB forte), o que pode não agradar no ambiente profissional.",
-            "Tela ainda deixa a desejar na fidelidade de cor."
+            "Muito pesado (2,6 kg). Carregar para a universidade todos os dias cansa.",
+            "Brilho da tela é de apenas 250 nits; usar perto de janelas será frustrante.",
+            "Usa memória RAM DDR4, um pouco defasada perante a concorrência DDR5."
         ],
-        redFlags: "Cuidado com algumas versões do Nitro V15 (uma versão inferior que estão vendendo com tela pior e refrigeração mais fraca). Foque no Nitro 5 (chassi mais gordinho) se quiser boa refrigeração."
+        redFlags: "Fidelidade de cores da tela. Arquitetura exige precisão de cor para aprovação de materiais (madeiras, tintas); com 250 nits e sRGB baixo, ela precisará de um monitor externo profissional."
     }
 ];
